@@ -42,6 +42,7 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
+ * Modified by Ronja Gueldenring
  */
 
 #include "flatland_server/debug_visualization.h"
@@ -126,6 +127,7 @@ void DebugVisualization::BodyToMarkers(visualization_msgs::MarkerArray& markers,
   while (fixture != NULL) {  // traverse fixture linked list
     visualization_msgs::Marker marker;
     marker.header.frame_id = "map";
+    marker.lifetime = ros::Duration(0.5);
     marker.id = markers.markers.size();
     marker.color.r = r;
     marker.color.g = g;
@@ -156,17 +158,41 @@ void DebugVisualization::BodyToMarkers(visualization_msgs::MarkerArray& markers,
 
       } break;
 
-      case b2Shape::e_polygon: {  // Convert b2Polygon -> LINE_STRIP
-        b2PolygonShape* poly = (b2PolygonShape*)fixture->GetShape();
-        marker.type = marker.LINE_STRIP;
-        marker.scale.x = 0.03;  // 3cm wide lines
+      case b2Shape::e_polygon: { 
 
-        for (int i = 0; i < poly->m_count; i++) {
-          geometry_msgs::Point p;
-          p.x = poly->m_vertices[i].x;
-          p.y = poly->m_vertices[i].y;
-          marker.points.push_back(p);
+        //Added by Ronja Gueldenring
+        //Publishing a filled polygon instead of a LINE_STRIP
+        b2PolygonShape* poly = (b2PolygonShape*)fixture->GetShape();
+        if (poly->m_count == 4){
+          marker.type = marker.TRIANGLE_LIST;
+          marker.scale.x = 1;  
+          marker.scale.y = 1;  
+          marker.scale.z = 1;  
+          for (int i = 0; i < (poly->m_count-1); i++) {
+            geometry_msgs::Point p;
+            p.x = poly->m_vertices[i].x;
+            p.y = poly->m_vertices[i].y;
+            marker.points.push_back(p);
+          }
+          for (int i = 2; i < poly->m_count; i++) {
+            geometry_msgs::Point p;
+            p.x = poly->m_vertices[i].x;
+            p.y = poly->m_vertices[i].y;
+            marker.points.push_back(p);
+          }
+        }else{
+          marker.type = marker.LINE_STRIP;
+          marker.scale.x = 0.05; 
+          for (int i = 0; i < poly->m_count; i++) {
+            geometry_msgs::Point p;
+            p.x = poly->m_vertices[i].x;
+            p.y = poly->m_vertices[i].y;
+            marker.points.push_back(p);
+          }
+        
         }
+
+
         marker.points.push_back(marker.points[0]);  // Close the shape
 
       } break;

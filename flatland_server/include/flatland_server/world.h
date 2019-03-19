@@ -42,6 +42,7 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
+ * Modified slightly by Ronja Gueldenring
  */
 
 #ifndef FLATLAND_SERVER_WORLD_H
@@ -79,6 +80,7 @@ class World : public b2ContactListener {
   PluginManager plugin_manager_;  ///< for loading and updating plugins
   bool service_paused_;  ///< indicates if simulation is paused by a service
                          /// call or not
+  float world_step_time_;
   InteractiveMarkerManager
       int_marker_manager_;  ///< for dynamically moving models from Rviz
   int physics_position_iterations_;  ///< Box2D solver param
@@ -176,6 +178,16 @@ class World : public b2ContactListener {
   void Pause();
 
   /**
+   * @brief Forces World to take a step of step_time secs
+   */
+  bool Step(float step_time);
+
+  /**
+   * @brief Returns True if simulation is in executing a step, else false
+   */
+  bool isInStep();
+
+  /**
    * @brief set the paused state of the simulation to false
    */
   void Resume();
@@ -205,6 +217,11 @@ class World : public b2ContactListener {
    * parameter is used to skip updating layers
    */
   void DebugVisualize(bool update_layers = true);
+
+private:
+  // True if step in world should be taken.
+  bool world_step_;
+
 };
 };      // namespace flatland_server
 #endif  // FLATLAND_SERVER_WORLD_H

@@ -42,6 +42,7 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
+ *  Modified slightly by Ronja Gueldenring
  */
 
 #include <flatland_server/service_manager.h>
@@ -65,6 +66,13 @@ ServiceManager::ServiceManager(SimulationManager *sim_man, World *world)
       nh.advertiseService("resume", &ServiceManager::Resume, this);
   toggle_pause_service_ =
       nh.advertiseService("toggle_pause", &ServiceManager::TogglePause, this);
+
+  step_service_ =
+      nh.advertiseService("step", &ServiceManager::Step, this);
+
+  is_in_step_service_ =
+      nh.advertiseService("is_in_step", &ServiceManager::isInStep, this);
+
 
   if (spawn_model_service_) {
     ROS_INFO_NAMED("Service Manager", "Model spawning service ready to go");
@@ -164,4 +172,29 @@ bool ServiceManager::TogglePause(std_srvs::Empty::Request &request,
   world_->TogglePaused();
   return true;
 }
+
+bool ServiceManager::Step(flatland_msgs::Step::Request &request,
+                   flatland_msgs::Step::Response &response) {
+  if (!world_->isInStep()){
+    float step_time = request.step_time.data;
+    world_->Step(step_time);
+    response.success = true;
+  }else{
+    response.success = false;
+  }
+  return true;
+}
+
+
+bool ServiceManager::isInStep(std_srvs::SetBool::Request &request,
+                                 std_srvs::SetBool::Response &response) {
+  if (world_->isInStep()){
+    response.success = true;
+  }else{
+    response.success = false;
+    response.message = std::to_string(ros::Time::now().toSec());
+  }
+  return true;
+}
+
 };

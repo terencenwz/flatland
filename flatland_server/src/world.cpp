@@ -42,6 +42,7 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
+ * Modified slightly by Ronja Gueldenring
  */
 
 #include <Box2D/Box2D.h>
@@ -99,12 +100,17 @@ World::~World() {
 }
 
 void World::Update(Timekeeper &timekeeper) {
-  if (!IsPaused()) {
+  if (!IsPaused() && world_step_) {
     plugin_manager_.BeforePhysicsStep(timekeeper);
     physics_world_->Step(timekeeper.GetStepSize(), physics_velocity_iterations_,
                          physics_position_iterations_);
     timekeeper.StepTime();
     plugin_manager_.AfterPhysicsStep(timekeeper);
+
+    world_step_time_ -= timekeeper.GetStepSize();
+    if(world_step_time_ <= 0.0){
+      world_step_ = false;
+    }
   }
   int_marker_manager_.update();
 }
@@ -338,6 +344,15 @@ void World::TogglePaused() { service_paused_ = !service_paused_; }
 
 bool World::IsPaused() {
   return service_paused_ || int_marker_manager_.isManipulating();
+}
+
+bool World::Step(float step_time) {
+  world_step_time_ = step_time;
+  world_step_ = true;
+}
+
+bool World::isInStep(){
+  return world_step_;
 }
 
 void World::DebugVisualize(bool update_layers) {

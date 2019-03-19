@@ -42,6 +42,7 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
+ *  Modified slightly by Ronja Gueldenring
  */
 
 #include <flatland_msgs/DeleteModel.h>
@@ -51,6 +52,8 @@
 #include <flatland_server/world.h>
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
+#include <std_srvs/SetBool.h>
+#include <flatland_msgs/Step.h>
 
 #ifndef FLATLAND_PLUGIN_SERVICE_MANAGER_H
 #define FLATLAND_PLUGIN_SERVICE_MANAGER_H
@@ -75,6 +78,8 @@ class ServiceManager {
   ros::ServiceServer resume_service_;  ///< service for resuming the simulation
   ros::ServiceServer toggle_pause_service_;  ///< service for toggling the
                                              /// pause state of the simulation
+  ros::ServiceServer step_service_;          /// taking a step of x seconds in simulation env
+  ros::ServiceServer is_in_step_service_;    /// returns true if env is taking step, returns false if env pauses.
 
   /**
    * @brief Service manager constructor
@@ -124,6 +129,20 @@ class ServiceManager {
    */
   bool TogglePause(std_srvs::Empty::Request &request,
                    std_srvs::Empty::Response &response);
+
+  /**
+   * @brief Callbacl for step service
+   */
+  bool Step(flatland_msgs::Step::Request &request,
+                   flatland_msgs::Step::Response &response);
+
+
+  /**
+   * @brief Callbacl for is_in_step service
+   */
+  bool isInStep(std_srvs::SetBool::Request &request,
+                   std_srvs::SetBool::Response &response);
+
 };
 };
 #endif
