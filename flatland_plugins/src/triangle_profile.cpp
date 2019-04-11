@@ -1,9 +1,9 @@
-/*
- *
- * Ronja Gueldenring
- * 
- */
-
+ /*
+ * @name	 	triangle_profile.cpp
+ * @brief	 	Simple triangle walking pattern.
+ * @author  	Ronja Gueldenring
+ * @date 		2019/04/05
+ **/
 #include <flatland_plugins/triangle_profile.h>
 
 namespace flatland_plugins {

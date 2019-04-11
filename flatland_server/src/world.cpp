@@ -42,7 +42,8 @@
  *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
- * Modified slightly by Ronja Gueldenring
+ * 
+ * Modified by Ronja Gueldenring
  */
 
 #include <Box2D/Box2D.h>
@@ -99,6 +100,7 @@ World::~World() {
   ROS_INFO_NAMED("World", "World destroyed");
 }
 
+//Modified by Ronja Gueldenring
 void World::Update(Timekeeper &timekeeper) {
   if (!IsPaused() && world_step_) {
     plugin_manager_.BeforePhysicsStep(timekeeper);

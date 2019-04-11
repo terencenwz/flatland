@@ -131,14 +131,14 @@ class ServiceManager {
                    std_srvs::Empty::Response &response);
 
   /**
-   * @brief Callbacl for step service
+   * @brief Callback for step service
    */
   bool Step(flatland_msgs::Step::Request &request,
                    flatland_msgs::Step::Response &response);
 
 
   /**
-   * @brief Callbacl for is_in_step service
+   * @brief Callback for is_in_step service
    */
   bool isInStep(std_srvs::SetBool::Request &request,
                    std_srvs::SetBool::Response &response);

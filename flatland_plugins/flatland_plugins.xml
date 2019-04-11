@@ -26,4 +26,7 @@
   <class type="flatland_plugins::RandomWall" base_class_type="flatland_server::WorldPlugin">
     <description>Add random walls into the world</description>
   </class>
+  <class type="flatland_plugins::PedsimMovement" base_class_type="flatland_server::ModelPlugin">
+    <description>Pedestrians from pedsim_ros are connected to bodies in flatland.</description>
+  </class>
 </library>

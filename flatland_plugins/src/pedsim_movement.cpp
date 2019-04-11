@@ -1,10 +1,10 @@
-/*
- *
- * Ronja Gueldenring
- * The movement of the pedsim agents is as well applied to the flatland models.
- * Furthermore a walking pattern is added.
- * 
- */
+ /*
+ * @name	 	pedsim_movement.cpp
+ * @brief	 	The movement of the pedsim agents is as well applied to the flatland models.
+ *              Furthermore, a walking pattern is added.
+ * @author  	Ronja Gueldenring
+ * @date 		2019/04/05
+ **/
 
 #include <flatland_plugins/pedsim_movement.h>
 #include <flatland_plugins/triangle_profile.h>
@@ -218,3 +218,4 @@ void PedsimMovement::ConfigFootprintDef(b2FixtureDef &fixture_def) {
 };
 
 PLUGINLIB_EXPORT_CLASS(flatland_plugins::PedsimMovement, flatland_server::ModelPlugin)
+

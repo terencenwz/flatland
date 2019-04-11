@@ -1,8 +1,9 @@
-/*
- *
- * @author Ronja Gueldenring
- * 
- */
+ /*
+ * @name	 	triangle_profile.h
+ * @brief	 	Abstract class for different walking patterns.
+ * @author      Ronja Gueldenring
+ * @date 		2019/04/05
+ **/
 
 
 #ifndef WALKING_PROFILE_H
