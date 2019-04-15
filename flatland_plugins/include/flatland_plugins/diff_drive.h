@@ -90,6 +90,14 @@ class DiffDrive : public flatland_server::ModelPlugin {
    * @param[in]     config The plugin YAML node
    */
   void BeforePhysicsStep(const Timekeeper& timekeeper) override;
+
+  /**
+   * @name          AfterPhysicsStep
+   * @brief         override the BeforePhysicsStep method
+   * @param[in]     config The plugin YAML node
+   */
+
+  void AfterPhysicsStep(const Timekeeper& timekeeper) override;
   /**
    * @name        TwistCallback
    * @brief       callback to apply twist (velocity and omega)

@@ -63,7 +63,7 @@ void Laser::OnInitialize(const YAML::Node &config) {
   ParseParameters(config);
 
   update_timer_.SetRate(update_rate_);
-  scan_publisher_ = nh_.advertise<sensor_msgs::LaserScan>(topic_, 1);
+  scan_publisher_ = nh_.advertise<sensor_msgs::LaserScan>(topic_, 1, true);
 
   // construct the body to laser transformation matrix once since it never
   // changes
@@ -73,7 +73,7 @@ void Laser::OnInitialize(const YAML::Node &config) {
   m_body_to_laser_ << c, -s, x, s, c, y, 0, 0, 1;
 
   unsigned int num_laser_points =
-      std::lround((max_angle_ - min_angle_) / increment_) + 1;
+      std::lround((max_angle_ - min_angle_) / increment_);
 
   // initialize size for the matrix storing the laser points
   m_laser_points_ = Eigen::MatrixXf(3, num_laser_points);
@@ -99,7 +99,7 @@ void Laser::OnInitialize(const YAML::Node &config) {
   laser_scan_.angle_increment = increment_;
   laser_scan_.time_increment = 0;
   laser_scan_.scan_time = 0;
-  laser_scan_.range_min = 0;
+  laser_scan_.range_min = 0.05;
   laser_scan_.range_max = range_;
   laser_scan_.ranges.resize(num_laser_points);
   if (reflectance_layers_bits_)
@@ -127,7 +127,7 @@ void Laser::OnInitialize(const YAML::Node &config) {
   laser_tf_.transform.rotation.w = q.w();
 }
 
-void Laser::BeforePhysicsStep(const Timekeeper &timekeeper) {
+void Laser::AfterPhysicsStep(const Timekeeper &timekeeper) {
   // keep the update rate
   if (!update_timer_.CheckUpdate(timekeeper)) {
     return;
