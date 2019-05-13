@@ -111,6 +111,7 @@ void World::Update(Timekeeper &timekeeper) {
 
     world_step_time_ -= timekeeper.GetStepSize();
     if(world_step_time_ <= 0.0){
+      // ROS_WARN("Real time factor %f", 0.1/(ros::WallTime::now() - step_start_time_).toSec());
       world_step_ = false;
     }
   }
@@ -349,6 +350,7 @@ bool World::IsPaused() {
 }
 
 bool World::Step(float step_time) {
+  step_start_time_ = ros::WallTime::now();
   world_step_time_ = step_time;
   world_step_ = true;
 }

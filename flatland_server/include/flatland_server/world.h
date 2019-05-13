@@ -219,6 +219,7 @@ class World : public b2ContactListener {
   void DebugVisualize(bool update_layers = true);
 
 private:
+  ros::WallTime step_start_time_;
   // True if step in world should be taken.
   bool world_step_;
 
