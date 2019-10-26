@@ -177,8 +177,8 @@ void DiffDrive::AfterPhysicsStep(const Timekeeper& timekeeper) {
     ground_truth_msg_.pose.pose.position.z = 0;
     ground_truth_msg_.pose.pose.orientation =
         tf::createQuaternionMsgFromYaw(angle);
-    ground_truth_msg_.twist.twist.linear.x = linear_vel_local.x;
-    ground_truth_msg_.twist.twist.linear.y = linear_vel_local.y;
+    ground_truth_msg_.twist.twist.linear.x = sqrt(pow(linear_vel_local.x,2)+ pow(linear_vel_local.y, 2));
+    ground_truth_msg_.twist.twist.linear.y = 0.0;
     ground_truth_msg_.twist.twist.linear.z = 0;
     ground_truth_msg_.twist.twist.angular.x = 0;
     ground_truth_msg_.twist.twist.angular.y = 0;
@@ -193,7 +193,7 @@ void DiffDrive::AfterPhysicsStep(const Timekeeper& timekeeper) {
     odom_msg_.pose.pose.orientation =
         tf::createQuaternionMsgFromYaw(angle + noise_gen_[2](rng_));
     odom_msg_.twist.twist.linear.x += noise_gen_[3](rng_);
-    odom_msg_.twist.twist.linear.y += noise_gen_[4](rng_);
+    odom_msg_.twist.twist.linear.y += 0.0;
     odom_msg_.twist.twist.angular.z += noise_gen_[5](rng_);
 
     if (enable_odom_pub_) {
