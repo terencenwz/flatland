@@ -66,6 +66,7 @@ World::World()
       int_marker_manager_(&models_, &plugin_manager_) {
   physics_world_ = new b2World(gravity_);
   physics_world_->SetContactListener(this);
+  world_step_time_ = 0.0;
 }
 
 World::~World() {
@@ -110,8 +111,10 @@ void World::Update(Timekeeper &timekeeper) {
     plugin_manager_.AfterPhysicsStep(timekeeper);
 
     world_step_time_ -= timekeeper.GetStepSize();
+    // ROS_WARN("world_step_time_: %f", world_step_time_);
+    // ROS_WARN("step_size: %f", timekeeper.GetStepSize());
     if(world_step_time_ <= 0.0){
-      // ROS_WARN("Real time factor %f", 0.1/(ros::WallTime::now() - step_start_time_).toSec());
+      // ROS_WARN("real time factor: %f", 0.1/(ros::WallTime::now() - step_start_).toSec());
       world_step_ = false;
     }
   }
@@ -298,6 +301,15 @@ void World::LoadModel(const std::string &model_yaml_path, const std::string &ns,
   m->DebugOutput();
 }
 
+Model * World::GetModel(std::string &name){
+  for (unsigned int i = 0; i < models_.size(); i++) {
+    if (models_[i]->GetName() == name) {
+      return models_[i];
+    }
+  }
+  return NULL;
+}
+
 void World::DeleteModel(const std::string &name) {
   bool found = false;
 
@@ -350,9 +362,14 @@ bool World::IsPaused() {
 }
 
 bool World::Step(float step_time) {
-  step_start_time_ = ros::WallTime::now();
-  world_step_time_ = step_time;
-  world_step_ = true;
+  if (!world_step_){
+    step_start_ = ros::WallTime::now();
+    world_step_time_ = step_time;
+    world_step_ = true;
+    return true;
+  }else {
+    return false;
+  }
 }
 
 bool World::isInStep(){

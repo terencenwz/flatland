@@ -69,7 +69,7 @@ namespace flatland_server {
  */
 class World : public b2ContactListener {
  public:
-  boost::filesystem::path world_yaml_dir_;  ///<directory containing world file
+  boost::filesystem::path world_yaml_dir_;  ///<path to the yaml file. --> model-type
   b2World *physics_world_;                  ///< Box2D physics world
   b2Vec2 gravity_;  ///< Box2D world gravity, always (0, 0)
   std::map<std::vector<std::string>, Layer *>
@@ -159,6 +159,9 @@ class World : public b2ContactListener {
   void LoadModel(const std::string &model_yaml_path, const std::string &ns,
                  const std::string &name, const Pose &pose);
 
+  Model * GetModel(std::string &name);
+
+
   /**
    * @brief remove model with a given name
    * @param[in] name The name of the model to remove
@@ -219,9 +222,9 @@ class World : public b2ContactListener {
   void DebugVisualize(bool update_layers = true);
 
 private:
-  ros::WallTime step_start_time_;
   // True if step in world should be taken.
   bool world_step_;
+  ros::WallTime step_start_;
 
 };
 };      // namespace flatland_server

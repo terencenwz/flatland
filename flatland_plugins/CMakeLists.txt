@@ -71,16 +71,16 @@ include_directories(
 # Declare a C++ library
 add_library(flatland_plugins_lib
   src/laser.cpp
-  src/tricycle_drive.cpp
+  #src/tricycle_drive.cpp
   src/diff_drive.cpp
   src/model_tf_publisher.cpp
   src/update_timer.cpp
-  src/bumper.cpp
+  #src/bumper.cpp
   src/tween.cpp
-  src/bool_sensor.cpp
-  src/world_modifier.cpp
-  src/world_random_wall.cpp
-  src/gps.cpp
+  #src/bool_sensor.cpp
+  #src/world_modifier.cpp
+  #src/world_random_wall.cpp
+  #src/gps.cpp
   src/pedsim_movement.cpp
   src/triangle_profile.cpp
   include/flatland_plugins/walking_profile.h

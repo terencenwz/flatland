@@ -37,6 +37,13 @@ class PedsimMovement : public ModelPlugin {
    */
   void OnInitialize(const YAML::Node &config) override;
 
+/**
+ * @brief For reconfiguring plugin, when model was disabled.
+ * Body Footprint of leg(s) will be set.
+ */
+  void reconfigure() override;
+
+
   /**
    * @brief Called when just before physics update
    * @param[in] timekeeper Object managing the simulation time
@@ -69,7 +76,6 @@ class PedsimMovement : public ModelPlugin {
     pedsim_msgs::AgentStatesConstPtr agents_;///< most recent pedsim agent state
 
     double leg_offset_;                      ///< offset between the legs
-    int id_;                                 ///< agents id
     bool toggle_leg_movement_;               ///< if true: legs are moving. if false: legs stand still
     int state_;                              ///< state of leg movement
     bool init_;

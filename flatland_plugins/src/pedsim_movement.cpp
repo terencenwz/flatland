@@ -47,15 +47,10 @@ void PedsimMovement::OnInitialize(const YAML::Node &config){
     
     //Walking profile
     wp_ = new flatland_plugins::TriangleProfile(step_time);
-
-    // get agents ID via namespace
-    std::string ns_str = GetModel()->GetNameSpace();
-
-    id_ = std::stoi(ns_str.substr(13, ns_str.length()));
-
     // get frame name of base body
-    body_frame_ = ns_str;
-    body_frame_ += "_base";
+    // std::string ns_str = GetModel()->GetNameSpace();
+    // body_frame_ = ns_str;
+    // body_frame_ += "_base";
 
     // Subscribe to ped_sims agent topic to retrieve the agents position
     pedsim_agents_sub_ = nh_.subscribe(pedsim_agents_topic, 1, &PedsimMovement::agentCallback, this);
@@ -65,10 +60,18 @@ void PedsimMovement::OnInitialize(const YAML::Node &config){
     left_leg_body_ = GetModel()->GetBody(reader.Get<std::string>("left_leg_body"))->GetPhysicsBody();
     right_leg_body_ = GetModel()->GetBody(reader.Get<std::string>("right_leg_body"))->GetPhysicsBody();
     
+    // Set leg radius
+    set_circular_footprint(left_leg_body_, leg_radius_);
+    set_circular_footprint(right_leg_body_, leg_radius_);
     // check if valid bodies are given
     if (body_ == nullptr || left_leg_body_ == nullptr || right_leg_body_ == nullptr) {
         throw flatland_server::YAMLException("Body with with the given name does not exist");
     }
+}
+
+void PedsimMovement::reconfigure(){
+    set_circular_footprint(left_leg_body_, leg_radius_);
+    set_circular_footprint(right_leg_body_, leg_radius_);
 }
 
 void PedsimMovement::BeforePhysicsStep(const Timekeeper &timekeeper) {
@@ -76,6 +79,11 @@ void PedsimMovement::BeforePhysicsStep(const Timekeeper &timekeeper) {
     if (!update_timer_.CheckUpdate(timekeeper) || agents_ == NULL) {
         return;
     }
+
+    
+    // get agents ID via namespace
+    std::string ns_str = GetModel()->GetNameSpace();
+    int id_ = std::stoi(ns_str.substr(13, ns_str.length()));
 
     //Find appropriate agent in list
     pedsim_msgs::AgentState person;
@@ -95,9 +103,6 @@ void PedsimMovement::BeforePhysicsStep(const Timekeeper &timekeeper) {
 
     //Initialize agent
     if(init_== true){
-        // Set leg radius
-        set_circular_footprint(left_leg_body_, leg_radius_);
-        set_circular_footprint(right_leg_body_, leg_radius_);
         // Set initial leg position
         resetLegPosition(person.twist.linear.x, person.twist.linear.y, 0.0);
         init_ = false;
