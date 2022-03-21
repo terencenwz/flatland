@@ -73,6 +73,7 @@ add_library(flatland_plugins_lib
   src/laser.cpp
   #src/tricycle_drive.cpp
   src/diff_drive.cpp
+  src/dynamics_limits.cpp
   src/model_tf_publisher.cpp
   src/update_timer.cpp
   #src/bumper.cpp
@@ -143,6 +144,9 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest_gtest(laser_test test/laser_test.test
                     test/laser_test.cpp)
   target_link_libraries(laser_test flatland_plugins_lib)
+
+  catkin_add_gtest(dynamics_limits_test test/dynamics_limits_test.cpp)
+  target_link_libraries(dynamics_limits_test flatland_plugins_lib)
 
   add_rostest_gtest(tricycle_drive_test test/tricycle_drive_test.test
                     test/tricycle_drive_test.cpp)

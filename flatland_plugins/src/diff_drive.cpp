@@ -83,6 +83,12 @@ void DiffDrive::OnInitialize(const YAML::Node& config) {
       reader.Get<double>("pub_rate", std::numeric_limits<double>::infinity());
   update_timer_.SetRate(pub_rate);
 
+  // Angular dynamics constraints
+  angular_dynamics_.Configure(reader.SubnodeOpt("angular_dynamics", YamlReader::MAP).Node());
+
+  // Linear dynamics constraints
+  linear_dynamics_.Configure(reader.SubnodeOpt("linear_dynamics", YamlReader::MAP).Node());
+
   // by default the covariance diagonal is the variance of actual noise
   // generated, non-diagonal elements are zero assuming the noises are
   // independent, we also don't care about linear z, angular x, and angular y
@@ -237,6 +243,20 @@ void DiffDrive::BeforePhysicsStep(const Timekeeper& timekeeper) {
   b2Vec2 position = b2body->GetPosition();
   float angle = b2body->GetAngle();
 
+
+  // Apply dynamics limits
+  double dt = timekeeper.GetStepSize();
+  linear_velocity_ = linear_dynamics_.Limit(linear_velocity_, twist_msg_.linear.x, dt);
+  angular_velocity_ = angular_dynamics_.Limit(angular_velocity_, twist_msg_.angular.z, dt);
+
+  // we apply the twist velocities, this must be done every physics step to make
+  // sure Box2D solver applies the correct velocity through out. The velocity
+  // given in the twist message should be in the local frame
+  b2Vec2 linear_vel_local(linear_velocity_, 0);
+  b2Vec2 linear_vel = b2body->GetWorldVector(linear_vel_local);
+  float angular_vel = angular_velocity_;  // angular is independent of frames
+
+
   // we apply the twist velocities, this must be done every physics step to make
   // sure Box2D solver applies the correct velocity through out. The velocity
   // given in the twist message should be in the local frame
@@ -257,6 +277,10 @@ void DiffDrive::BeforePhysicsStep(const Timekeeper& timekeeper) {
 
   b2body->SetLinearVelocity(linear_vel_cm);
   b2body->SetAngularVelocity(angular_vel);
+
+
+
+
 }
 }
 
