@@ -256,14 +256,6 @@ void DiffDrive::BeforePhysicsStep(const Timekeeper& timekeeper) {
   b2Vec2 linear_vel = b2body->GetWorldVector(linear_vel_local);
   float angular_vel = angular_velocity_;  // angular is independent of frames
 
-
-  // we apply the twist velocities, this must be done every physics step to make
-  // sure Box2D solver applies the correct velocity through out. The velocity
-  // given in the twist message should be in the local frame
-  b2Vec2 linear_vel_local(twist_msg_.linear.x, 0);
-  b2Vec2 linear_vel = b2body->GetWorldVector(linear_vel_local);
-  float angular_vel = twist_msg_.angular.z;  // angular is independent of frames
-
   // we want the velocity vector in the world frame at the center of mass
 
   // V_cm = V_o + W x r_cm/o
