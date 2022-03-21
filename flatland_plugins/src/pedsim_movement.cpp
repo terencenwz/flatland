@@ -11,6 +11,7 @@
 #include <flatland_server/exceptions.h>
 #include <flatland_server/yaml_reader.h>
 #include <pluginlib/class_list_macros.h>
+#include <random>
 
 using namespace flatland_server;
 
